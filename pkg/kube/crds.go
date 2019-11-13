@@ -3,6 +3,7 @@ package kube
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"reflect"
 	"time"
 
@@ -593,6 +594,12 @@ func RegisterCRD(apiClient apiextensionsclientset.Interface, name string,
 				OpenAPIV3Schema: schema,
 			},
 		},
+	}
+
+	if data, err := json.Marshal(crd); err == nil {
+		if err := ioutil.WriteFile("/tmp/crd.json", data, 0644); err != nil {
+			log.Logger().Warnf("Error created crd file %v", err)
+		}
 	}
 
 	return register(apiClient, name, crd)
