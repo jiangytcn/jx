@@ -33,7 +33,7 @@ const (
 	defaultAnchoreVersion     = "0.2.3"
 	defaultAnchorePassword    = "anchore"
 	defaultAnchoreConfigDir   = "/anchore_service_dir"
-	anchoreDeploymentName     = "anchore-anchore-engine-core"
+	anchoreDeploymentName     = "anchore-anchore-engine-api"
 )
 
 var (
@@ -42,7 +42,7 @@ var (
 `)
 
 	createAddonAnchoreExample = templates.Examples(`
-		# Create the anchore addon 
+		# Create the anchore addon
 		jx create addon anchore
 
 		# Create the anchore addon in a custom namespace

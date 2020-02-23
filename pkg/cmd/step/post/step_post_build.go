@@ -112,16 +112,6 @@ func (o *StepPostBuildOptions) addImageCVEProvider() error {
 		return nil
 	}
 
-	cveProviderHost := os.Getenv("JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST")
-	if cveProviderHost == "" {
-		return fmt.Errorf("no JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST env var found")
-	}
-
-	cveProviderPort := os.Getenv("JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT")
-	if cveProviderPort == "" {
-		return fmt.Errorf("no JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT env var found")
-	}
-
 	log.Logger().Infof("adding image %s to CVE provider", o.FullImageName)
 
 	imageID, err := o.addImageToAnchore()
@@ -150,13 +140,13 @@ func (o *StepPostBuildOptions) addImageToAnchore() (string, error) {
 	cmd := exec.Command("anchore-cli", "image", "add", o.FullImageName) // #nosec
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "ANCHORE_CLI_USER="+a.Username)
-	cmd.Env = append(cmd.Env, "ANCHORE_CLI_PASS="+a.Password)
+	cmd.Env = append(cmd.Env, "ANCHORE_CLI_PASS="+strings.TrimSuffix(a.Password, "\n"))
 	cmd.Env = append(cmd.Env, "ANCHORE_CLI_URL="+a.URL)
 	data, err := cmd.CombinedOutput()
 	text := string(data)
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%v: %s", err, text)
 	}
 	scanner := bufio.NewScanner(strings.NewReader(text))
 	var imageID string

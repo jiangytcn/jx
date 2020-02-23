@@ -249,6 +249,8 @@ func stepEffectivePipeline(params CRDCreationParameters) syntax.Step {
 		args = append(args, fmt.Sprintf("--env %s=%s", e.Name, e.Value))
 	}
 
+	log.Logger().Infof("App with envs %v", args)
+
 	step := syntax.Step{
 		Name:      createEffectivePipelineStepName,
 		Comment:   "Pipeline step creating the effective pipeline configuration",
@@ -357,6 +359,12 @@ func buildEnvParams(params CRDCreationParameters) []corev1.EnvVar {
 
 	repo := gitInfo.Name
 	if repo != "" {
+		// keep the ORG environment variable for CVE post build analysing
+		envVars = append(envVars, corev1.EnvVar{
+			Name:  "ORG",
+			Value: repo,
+		})
+
 		envVars = append(envVars, corev1.EnvVar{
 			Name:  "REPO_NAME",
 			Value: repo,

@@ -52,7 +52,7 @@ func NewCmdCreateEtcHosts(commonOpts *opts.CommonOptions) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "etc-hosts kind [url]",
-		Short:   "Creates a new Git server URL",
+		Short:   "Creates an entry in /etc/hosts",
 		Aliases: []string{"etchosts", "etc_hosts"},
 		Long:    create_etc_hosts_long,
 		Example: create_etc_hosts_example,

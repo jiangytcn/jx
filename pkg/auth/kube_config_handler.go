@@ -222,9 +222,12 @@ func (k *KubeAuthConfigHandler) userFromSecret(secret corev1.Secret) (UserAuth, 
 		return UserAuth{}, fmt.Errorf("no password found in secret '%s'", secret.Name)
 	}
 
+	sanitizedPass := strings.TrimSuffix(string(password), "\n")
+
 	return UserAuth{
 		Username: string(username),
-		ApiToken: string(password),
+		ApiToken: sanitizedPass,
+		Password: sanitizedPass,
 	}, nil
 }
 
